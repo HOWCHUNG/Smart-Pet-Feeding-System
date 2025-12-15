@@ -1,98 +1,109 @@
-# Smart Pet Feeding System
-
-## Project Overview
-This project implements a **Smart Pet Weight Monitoring and Automatic Feeding System** using a Raspberry Pi.
-A load cell with HX711 amplifier is used to continuously measure the pet’s weight, and an SG90 servo motor
-is controlled to dispense different amounts of food based on the measured weight.
-A 5kg load cell is used to simulate small pets (e.g., hamster) for demonstration purposes.
+# 智慧寵物體重監控與自動餵食系統  
+Smart Pet Weight Monitoring and Automatic Feeding System
 
 ---
 
-## System Architecture
-The system follows an event-driven and rule-based control architecture:
+## 一、專案簡介（Project Overview）
+本專案建置一套 **智慧寵物體重監控與自動餵食系統**，  
+透過 Raspberry Pi 結合重量感測模組（HX711 + Load Cell），即時量測寵物體重，
+並依據量測結果自動控制伺服馬達（SG90）進行餵食。
 
-1. **On-scale detection**: The system detects when a pet steps onto the scale.
-2. **Weight stability verification**: Feeding decisions are made only after the weight remains stable
-   for a predefined number of samples.
-3. **Rule-based decision**: The feeding amount is determined by the stable weight range.
-4. **Automatic feeding**: Food is dispensed once per visit. The pet must step off the scale before
-   the next feeding is allowed.
+為符合課程實作需求與效益考量，本系統使用 **5kg Load Cell** 模擬小型寵物
+（例如倉鼠）之體重變化，驗證智慧餵食邏輯與系統運作流程。
 
 ---
 
-## Hardware Components
-- Raspberry Pi
-- HX711 Load Cell Amplifier
-- 5kg Load Cell (used for simulation)
-- 16x2 I2C LCD (PCF8574, I2C address typically 0x27)
-- SG90 Servo Motor
+## 二、系統架構與流程（System Architecture）
+本系統採用 **事件導向（Event-driven）與規則式（Rule-based）控制架構**，
+整體流程如下：
+
+1. **上秤偵測（On-scale detection）**  
+   系統偵測是否有寵物站上秤台。
+
+2. **重量穩定判斷（Weight stability verification）**  
+   只有在重量連續多次量測皆落於允許誤差範圍內時，才視為有效體重。
+
+3. **餵食決策判斷（Rule-based decision）**  
+   依據穩定體重所屬區間，判斷本次應餵食的份量。
+
+4. **自動餵食（Automatic feeding）**  
+   透過 SG90 伺服馬達控制飼料出口，完成一次餵食動作。
+
+5. **防止重複餵食機制**  
+   系統要求寵物需離開秤台後，才允許下一次餵食判斷。
 
 ---
 
-## Wiring and GPIO Mapping
+## 三、硬體設備清單（Hardware Components）
+- Raspberry Pi  
+- HX711 重量感測放大模組  
+- 5kg Load Cell（用於小型寵物模擬）  
+- 16x2 I2C LCD 顯示器（PCF8574）  
+- SG90 伺服馬達  
 
-| Component | Raspberry Pi GPIO |
-|----------|-------------------|
+---
+
+## 四、接線與 GPIO 對照表（Wiring & GPIO Mapping）
+
+| 模組 | Raspberry Pi GPIO |
+|-----|------------------|
 | HX711 DT | GPIO 5 |
 | HX711 SCK | GPIO 6 |
 | LCD SDA | GPIO 2 |
 | LCD SCL | GPIO 3 |
-| SG90 Signal | GPIO 18 |
+| SG90 控制訊號 | GPIO 18 |
 
 ---
 
-## Software Logic
-The system adopts a **rule-based intelligence mechanism**:
+## 五、軟體邏輯說明（Software Logic）
+本系統核心邏輯包含以下設計重點：
 
-- Feeding is triggered only when the pet is detected on the scale.
-- Weight measurements must be stable (N consecutive samples within a threshold)
-  before being considered valid.
-- Feeding amount is adjusted according to the weight range:
-  - Underweight → more food
-  - Normal weight → normal feeding
-  - Overweight → reduced feeding
-- After feeding, the system requires the pet to step off the scale to prevent repeated feeding.
+- 只有在偵測到寵物站上秤台時，才啟動重量判斷流程  
+- 重量必須通過「穩定判斷機制」，避免瞬間晃動造成誤判  
+- 餵食量依據體重區間進行調整：
+  - 體重偏低 → 增加餵食量  
+  - 體重正常 → 標準餵食量  
+  - 體重偏高 → 減少餵食量  
+- 每次餵食後，需等待寵物離開秤台，防止重複餵食  
 
 ---
 
-## How to Run
+## 六、執行方式（How to Run）
 
-### 1. Enable I2C
-Enable I2C using `raspi-config`, then verify:
-```bash
+### 1. 啟用 I2C 功能
+使用 `raspi-config` 啟用 I2C，並確認裝置存在：
+```
+bash
 ls /dev/i2c*
 sudo i2cdetect -y 1
-# Smart-Pet-Feeding-System
 ```
 
----
-
-## 2. Install Required Packages
+## 2. 安裝必要套件
 ```
 sudo apt-get update
 sudo apt-get install -y python3-smbus i2c-tools
 ```
 ---
 
-### 3. Calibration
-Before running the system, calibrate the load cell:
+### 3. 重量感測校正
+在正式執行系統前，需先校正 Load Cell：
 ```
 sudo python3 hx711_calibrate.py
 ```
 
 ---
-## 4. Run the Main Program
+## 4. 執行主程式
 ```
 sudo python3 src/main_feed_by_weight.py
 ```
 ---
 
-## Demo Video
-```YouTube demo video:
+## 七、系統展示影片
+```YouTube 展示影片:
 ```
 ---
 
-## References
+## 八、參考資料
 
 Raspberry Pi GPIO Documentation
 https://www.raspberrypi.com/documentation/computers/raspberry-pi.html
