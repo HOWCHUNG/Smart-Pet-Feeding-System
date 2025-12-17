@@ -47,7 +47,7 @@ Smart Pet Weight Monitoring and Automatic Feeding System
 ### 接線示意圖
 下圖為本專案實際使用之接線示意圖，用以輔助說明各硬體模組與 Raspberry Pi 之連接方式：
 
-![系統接線圖](docs/接線圖.png)
+![系統接線圖](docs/wiring_diagram.jpg)
 
 | 模組 | Raspberry Pi GPIO |
 |-----|------------------|
