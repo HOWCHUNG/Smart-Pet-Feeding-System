@@ -99,8 +99,8 @@ sudo python3 src/main_feed_by_weight.py
 ---
 
 ## 七、系統展示影片
-```YouTube 展示影片:
-```
+YouTube 展示影片:
+https://www.youtube.com/watch?v=-sbke4Zren4
 ---
 
 ## 八、參考資料
